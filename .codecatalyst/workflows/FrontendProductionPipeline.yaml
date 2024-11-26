@@ -1,0 +1,69 @@
+Name: FrontendProductionPipeline
+SchemaVersion: '1.0'
+Triggers:
+  - Type: PUSH
+    Branches:
+      - production
+Actions:
+  Build:
+    Compute:
+      Type: Lambda
+      Fleet: Linux.x86-64.Large
+    Identifier: aws/build@v1
+    Inputs:
+      Sources:
+        - WorkflowSource
+    Outputs:
+      Artifacts:
+        - Name: dist
+          Files:
+            - dist/**/*
+    Configuration:
+      Steps:
+        - Run: npm install
+        - Run: npm run build:production
+    Packages:
+      NpmConfiguration:
+        PackageRegistries:
+          - PackagesRepository: pj-make-it
+      ExportAuthorizationToken: true
+  DeployToAmplifyHosting:
+    Identifier: codecatalyst-labs/deploy-to-amplify-hosting@v1
+    Environment:
+      Name: ANGEL2024AccountPrd
+    Inputs:
+      Artifacts:
+        - dist
+    Compute:
+      Type: Lambda
+    Configuration:
+      Wait: true
+      AWSRegion: ap-northeast-1
+      AppStackName: MakeItFrontEnd
+      CreateBranch: true
+      AmplifyBranchName: ${WorkflowSource.BranchName}
+      Path: dist
+    DependsOn:
+      - Build
+  ScanWithAmazonCodeGuruSecurity:
+    # Identifies the action. Do not modify this value.
+    Identifier: codecatalyst-labs/scan-with-codeguru-security@v1.1.0
+    # Required; You can use an environment to access AWS resources.
+    Environment:
+      Name: ANGEL2024AccountPrd
+    # Specifies the source and/or artifacts to pass to the action as input.
+    Inputs:
+      # Optional
+      Sources:
+        - WorkflowSource # This specifies that the action requires this Workflow as a source
+      Artifacts:
+        - dist
+    Compute:
+      Type: Lambda
+    Configuration:
+      GenerateReport: true
+      AWSRegion: ap-northeast-1
+      IncludeQualityScan: true
+      Path: src
+    DependsOn:
+      - Build

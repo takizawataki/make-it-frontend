@@ -1,0 +1,18 @@
+{
+  "cSpell.words": [
+    "autodocs",
+    "clsx",
+    "Linkify",
+    "linkifyjs",
+    "lintstagedrc",
+    "lucide",
+    "passwordless",
+    "RESTAPI",
+    "shadcn",
+    "sonner",
+    "tanstack"
+  ],
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "editor.tabSize": 2
+}

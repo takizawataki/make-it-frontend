@@ -1,0 +1,35 @@
+{
+  "root": true,
+  "env": { "browser": true, "es2020": true },
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:react-hooks/recommended",
+    "plugin:import/recommended",
+    "plugin:import/typescript",
+    "prettier",
+    "plugin:storybook/recommended"
+  ],
+  "ignorePatterns": [
+    "dist",
+    "routeTree.gen",
+    "!.storybook",
+    "**/generatedApi.ts"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["react-refresh", "@typescript-eslint", "import"],
+  "rules": {
+    "react-refresh/only-export-components": [
+      "warn",
+      { "allowConstantExport": true }
+    ],
+    "sort-imports": ["error", { "ignoreDeclarationSort": true }],
+    "import/order": ["error", { "alphabetize": { "order": "asc" } }]
+  },
+  "settings": {
+    "import/resolver": {
+      "typescript": true,
+      "node": true
+    }
+  }
+}
